@@ -364,6 +364,10 @@ public class BloodmoonActuator implements Listener, Runnable, Closeable
         }
     }
 
+    private static boolean shouldInclude(final Player player) {
+        return player.getGameMode() != GameMode.SPECTATOR;
+    }
+
     public void AddToBlacklist (LivingEntity entity)
     {
         blacklistedMobs.add(entity);
