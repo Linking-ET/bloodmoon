@@ -177,6 +177,11 @@ public class BloodmoonActuator implements Listener, Runnable, Closeable
         if (players.isEmpty()) {
             return;
         }
+
+        final int randomPlayerIndex = random.nextInt(numPlayers);
+        final Player randomPlayer = players.get(randomPlayerIndex);
+
+        this.SpawnHorde(randomPlayer);
     }
 
     public void SpawnHorde (Player target)
