@@ -5,8 +5,6 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.*;
@@ -31,10 +29,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.util.Vector;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -173,11 +169,19 @@ public class BloodmoonActuator implements Listener, Runnable, Closeable
     public void SpawnHorde ()
     {
         Random random = new Random();
-        Player[] players = world.getPlayers().toArray(new Player[0]);
-        if(players.length > 0)
-        {
-            SpawnHorde(players[random.nextInt(players.length)]);
+        final List<Player> players = world.getPlayers().stream().filter(
+                BloodmoonActuator::shouldInclude
+        ).toList();
+        final int numPlayers = players.size();
+
+        if (players.isEmpty()) {
+            return;
         }
+
+        final int randomPlayerIndex = random.nextInt(numPlayers);
+        final Player randomPlayer = players.get(randomPlayerIndex);
+
+        this.SpawnHorde(randomPlayer);
     }
 
     public void SpawnHorde (Player target)
@@ -352,20 +356,27 @@ public class BloodmoonActuator implements Listener, Runnable, Closeable
 
     public void SpawnZombieBoss ()
     {
-        if (world.getPlayers().size() > 0)
-        {
-            List<Player> players = world.getPlayers();
-            Random rnd = new Random();
-            int index = rnd.nextInt(players.size());
-            Player chosenOne = (Player) players.get(index);
-            Location spawn = chosenOne.getLocation();
-            Location newLocation = spawn.clone();
-            newLocation.add((double) (rnd.nextInt(10) + 10), 0.0D, (double) (rnd.nextInt(10) + 10));
-            newLocation.setY((double) world.getHighestBlockYAt(newLocation));
-            ZombieIBoss zombieBoss = new ZombieIBoss(newLocation);
-            zombieBoss.Start();
-            bosses.add(zombieBoss);
+        if (world.getPlayers().size() == 0) {
+            return;
         }
+
+        final List<Player> players = world.getPlayers().stream().filter(
+                BloodmoonActuator::shouldInclude
+        ).toList();
+        Random rnd = new Random();
+        int index = rnd.nextInt(players.size());
+        Player chosenOne = players.get(index);
+        Location spawn = chosenOne.getLocation();
+        Location newLocation = spawn.clone();
+        newLocation.add((rnd.nextInt(10) + 10), 0.0D, (rnd.nextInt(10) + 10));
+        newLocation.setY(world.getHighestBlockYAt(newLocation));
+        ZombieIBoss zombieBoss = new ZombieIBoss(newLocation);
+        zombieBoss.Start();
+        bosses.add(zombieBoss);
+    }
+
+    private static boolean shouldInclude(final Player player) {
+        return player.getGameMode() != GameMode.SPECTATOR;
     }
 
     public void AddToBlacklist (LivingEntity entity)
