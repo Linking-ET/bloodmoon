@@ -360,7 +360,9 @@ public class BloodmoonActuator implements Listener, Runnable, Closeable
             return;
         }
 
-        List<Player> players = world.getPlayers();
+        final List<Player> players = world.getPlayers().stream().filter(
+                BloodmoonActuator::shouldInclude
+        ).toList();
         Random rnd = new Random();
         int index = rnd.nextInt(players.size());
         Player chosenOne = players.get(index);
