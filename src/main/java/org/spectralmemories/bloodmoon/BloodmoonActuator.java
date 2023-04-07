@@ -356,20 +356,21 @@ public class BloodmoonActuator implements Listener, Runnable, Closeable
 
     public void SpawnZombieBoss ()
     {
-        if (world.getPlayers().size() > 0)
-        {
-            List<Player> players = world.getPlayers();
-            Random rnd = new Random();
-            int index = rnd.nextInt(players.size());
-            Player chosenOne = (Player) players.get(index);
-            Location spawn = chosenOne.getLocation();
-            Location newLocation = spawn.clone();
-            newLocation.add((double) (rnd.nextInt(10) + 10), 0.0D, (double) (rnd.nextInt(10) + 10));
-            newLocation.setY((double) world.getHighestBlockYAt(newLocation));
-            ZombieIBoss zombieBoss = new ZombieIBoss(newLocation);
-            zombieBoss.Start();
-            bosses.add(zombieBoss);
+        if (world.getPlayers().size() == 0) {
+            return;
         }
+
+        List<Player> players = world.getPlayers();
+        Random rnd = new Random();
+        int index = rnd.nextInt(players.size());
+        Player chosenOne = players.get(index);
+        Location spawn = chosenOne.getLocation();
+        Location newLocation = spawn.clone();
+        newLocation.add((rnd.nextInt(10) + 10), 0.0D, (rnd.nextInt(10) + 10));
+        newLocation.setY(world.getHighestBlockYAt(newLocation));
+        ZombieIBoss zombieBoss = new ZombieIBoss(newLocation);
+        zombieBoss.Start();
+        bosses.add(zombieBoss);
     }
 
     private static boolean shouldInclude(final Player player) {
