@@ -169,10 +169,13 @@ public class BloodmoonActuator implements Listener, Runnable, Closeable
     public void SpawnHorde ()
     {
         Random random = new Random();
-        Player[] players = world.getPlayers().toArray(new Player[0]);
-        if(players.length > 0)
-        {
-            SpawnHorde(players[random.nextInt(players.length)]);
+        final List<Player> players = world.getPlayers().stream().filter(
+                BloodmoonActuator::shouldInclude
+        ).toList();
+        final int numPlayers = players.size();
+
+        if (players.isEmpty()) {
+            return;
         }
     }
 
