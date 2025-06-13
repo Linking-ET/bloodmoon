@@ -210,7 +210,7 @@ public class BloodmoonActuator implements Listener, Runnable, Closeable
                 newMobLocation = newMobLocation.subtract(random.nextInt(maxDistance), 0, random.nextInt(maxDistance));
             }
 
-            newMobLocation.setY(world.getHighestBlockYAt(newMobLocation));
+            newMobLocation.setY(world.getHighestBlockYAt(newMobLocation) + 1);
 
             world.spawnEntity(newMobLocation, mobType);
             world.strikeLightningEffect(newMobLocation);
@@ -361,7 +361,7 @@ public class BloodmoonActuator implements Listener, Runnable, Closeable
             Location spawn = chosenOne.getLocation();
             Location newLocation = spawn.clone();
             newLocation.add((double) (rnd.nextInt(10) + 10), 0.0D, (double) (rnd.nextInt(10) + 10));
-            newLocation.setY((double) world.getHighestBlockYAt(newLocation));
+            newLocation.setY((double) world.getHighestBlockYAt(newLocation) + 1);
             ZombieIBoss zombieBoss = new ZombieIBoss(newLocation);
             zombieBoss.Start();
             bosses.add(zombieBoss);
