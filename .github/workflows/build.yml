@@ -59,6 +59,5 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: build-libs
-        path: build/libs/*.jar
+        path: build/libs/bloodmoon.jar
 
