@@ -59,8 +59,8 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: jar-package
-        path: build/**.jar
+        name: build
+        path: build/
 
   dependency-submission:
 
