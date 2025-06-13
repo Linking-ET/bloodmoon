@@ -35,7 +35,7 @@ jar {
         configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
     }
 
-    destinationDirectory.set(file("exes/server/plugins"))
+    //destinationDirectory.set(file("exes/server/plugins"))
 }
 
 
